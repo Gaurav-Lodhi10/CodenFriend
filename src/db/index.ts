@@ -5,19 +5,12 @@ declare global {
   var db: PrismaClient | undefined
 }
 
-let db: PrismaClient
+const db = global.db || new PrismaClient({
+  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+})
 
-if (process.env.NODE_ENV === 'production') {
-  db = new PrismaClient({
-    log: ['error'],
-  })
-} else {
-  if (!global.db) {
-    global.db = new PrismaClient({
-      log: ['query', 'error', 'warn'],
-    })
-  }
-  db = global.db
+if (process.env.NODE_ENV !== 'production') {
+  global.db = db
 }
 
 export { db }
