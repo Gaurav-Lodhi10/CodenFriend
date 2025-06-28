@@ -25,22 +25,31 @@ export const authConfig = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      const dbUser = await db.user.findFirst({
-        where: {
-          email: token.email!
-        }
-      });
-
-      if (!dbUser) {
-        throw new Error("no user with email found");
+      if (!token.email) {
+        return token;
       }
 
-      return {
-        id: dbUser.id,
-        name: dbUser.name,
-        email: dbUser.email,
-        picture: dbUser.image,
-      };
+      try {
+        const dbUser = await db.user.findFirst({
+          where: {
+            email: token.email
+          }
+        });
+
+        if (!dbUser) {
+          return token;
+        }
+
+        return {
+          id: dbUser.id,
+          name: dbUser.name,
+          email: dbUser.email,
+          picture: dbUser.image,
+        };
+      } catch (error) {
+        console.error('Error in jwt callback:', error);
+        return token;
+      }
     },
     async session({ token, session }) {
       if (token) {

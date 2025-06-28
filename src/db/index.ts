@@ -8,10 +8,14 @@ declare global {
 let db: PrismaClient
 
 if (process.env.NODE_ENV === 'production') {
-  db = new PrismaClient()
+  db = new PrismaClient({
+    log: ['error'],
+  })
 } else {
   if (!global.db) {
-    global.db = new PrismaClient()
+    global.db = new PrismaClient({
+      log: ['query', 'error', 'warn'],
+    })
   }
   db = global.db
 }
