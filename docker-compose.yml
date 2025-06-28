@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  dev-finder-db:
+    image: mongo:latest
+    restart: always
+    container_name: dev-finder-db
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongodb:/data/db
+
+volumes:
+  mongodb:
